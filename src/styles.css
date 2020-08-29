@@ -18,13 +18,11 @@ a {
 }
 
 .txt-input{
-  /*min-height: 100px;*/
-  height: calc(100vh - 770px);
+  height: 165px;
 }
 
 .txt-output{
-  /*min-height: 100px;*/
-  height: calc(100vh - 770px);
+  height: calc(100vh - 720px);
 }
 
 .txt-part{

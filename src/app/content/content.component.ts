@@ -96,14 +96,14 @@ export class ContentComponent implements OnInit, OnDestroy {
    */
   setHotKeys(): void{
     // レス描写エリアの一番上に移動
-    this.hotkeysService.add(new Hotkey(this.settings.output_key,
+    this.hotkeysService.add(new Hotkey(this.settings.output_key.toLowerCase(),
       (event: KeyboardEvent): boolean => {
         this.btnOutputClickHandler();
         return false; // Prevent bubbling
       }));
 
     // レス描写エリアの一番下に移動
-    this.hotkeysService.add(new Hotkey(this.settings.make_key, (event: KeyboardEvent): boolean => {
+    this.hotkeysService.add(new Hotkey(this.settings.make_key.toLowerCase(), (event: KeyboardEvent): boolean => {
       this.btnMakeFileClickHandler();
       return false; // Prevent bubbling
     }));
