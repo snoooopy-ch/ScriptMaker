@@ -26,9 +26,9 @@
 </div>
 <div class="m-2 border p-1">
   <div class="d-inline-flex w-100 justify-content-between">
-    <div class="output-group">ファイル名前半<input class="txt-file-name" type="text"></div>
-    <div class="">開始数<input class="ml-1" type="text"></div>
-    <div class="pr-1">拡張子<input class="ml-1" type="text"></div>
+    <div class="output-group">ファイル名前半<input class="txt-file-name" type="text" [(ngModel)]="filePrefix"></div>
+    <div class="">開始数<input class="ml-1" type="text" [(ngModel)]="startRow"></div>
+    <div class="pr-1">拡張子<input class="ml-1" type="text" [(ngModel)]="fileExtension"></div>
   </div>
   <div class="mt-1">
     保存ディレクトリ<input class="ml-1 txt-save-folder" type="text" [(ngModel)]="saveFolder">
@@ -40,6 +40,6 @@
   <label class="mb-0"><input class="mr-1" type="radio" name="opt-charset" [(ngModel)]="selectedCharset" value="UTF-8">UTF-8(BOMなし)</label>
 </div>
 <div class="m-2">
-  <button class="w-100 btn-make-file">生成</button>
+  <button class="w-100 btn-make-file" (click)="btnMakeFileClickHandler()">生成</button>
 </div>
 
