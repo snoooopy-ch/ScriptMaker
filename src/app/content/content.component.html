@@ -1,1 +1,45 @@
+<div class="m-2">
+  <div>入力欄</div>
+  <textarea class="w-100 txt-input" [(ngModel)]="inputUrls"></textarea>
+</div>
+<div class="mx-2">
+  パーツ1<input type="text" class="ml-1 txt-part" [(ngModel)]="part1">
+</div>
+<div class="mx-2 mt-1">
+  パーツ2<input type="text" class="ml-1 txt-part" [(ngModel)]="part2">
+</div>
+<div class="mx-2 mt-1">
+  パーツ3<input type="text" class="ml-1 txt-part" [(ngModel)]="part3">
+</div>
+<div class="mx-2 mt-1">
+  パーツ4<input type="text" class="ml-1 txt-part" [(ngModel)]="part4">
+</div>
+<div class="m-2">
+  <button class="w-100 btn-output" (click)="btnOutputClickHandler()">出力</button>
+</div>
+<div class="m-2 w-100">
+  行数<input type="number" class="ml-1 w-25" [(ngModel)]="rows">
+</div>
+<div class="m-2">
+  <div>出力欄</div>
+  <textarea class="w-100 txt-output" [(ngModel)]="outputScript"></textarea>
+</div>
+<div class="m-2 border p-1">
+  <div class="d-inline-flex w-100 justify-content-between">
+    <div class="output-group">ファイル名前半<input class="txt-file-name" type="text"></div>
+    <div class="">開始数<input class="ml-1" type="text"></div>
+    <div class="pr-1">拡張子<input class="ml-1" type="text"></div>
+  </div>
+  <div class="mt-1">
+    保存ディレクトリ<input class="ml-1 txt-save-folder" type="text" [(ngModel)]="saveFolder">
+  </div>
+</div>
+<div class="m-2">
+  文字コード
+  <label class="mx-5 mb-0"><input class="mr-1" type="radio" name="opt-charset" [(ngModel)]="selectedCharset" value="Shift-JIS">Shift-JIS</label>
+  <label class="mb-0"><input class="mr-1" type="radio" name="opt-charset" [(ngModel)]="selectedCharset" value="UTF-8">UTF-8(BOMなし)</label>
+</div>
+<div class="m-2">
+  <button class="w-100 btn-make-file">生成</button>
+</div>
 

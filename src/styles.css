@@ -1,1 +1,70 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~bootstrap/dist/css/bootstrap.css";
+
+body {
+  font-family: "Yu Gothic UI", "Microsoft Sans Serif", "Yu Gothic", "MS PGothic",  sans-serif !important;
+  font-weight: 400 !important;
+  color: #000;
+  overflow: hidden;
+}
+
+a {
+  text-decoration: none;
+}
+
+* a {
+  text-decoration: none;
+  color: unset;
+}
+
+.txt-input{
+  height: 165px;
+}
+
+.txt-output{
+  height: 165px;
+}
+
+.txt-part{
+  width: calc(100% - 48px);
+}
+.output-group{
+  width: 33.333%;
+}
+
+.txt-file-name{
+  margin: 0 0 0 11px;
+  width: calc(100% - 107px);
+}
+
+.txt-extension{
+
+}
+
+.txt-save-folder{
+  width: calc(100% - 107px);
+}
+
+.btn-output{
+  height: 80px;
+  border-radius: 5px;
+  background-color: lightsalmon;
+  border:solid 1px lightsalmon;
+}
+
+.btn-output:hover {
+  background-color: white;
+  color: lightsalmon;
+}
+
+.btn-make-file{
+  height: 80px;
+  border-radius: 5px;
+  background-color: #cc99FF;
+  border:solid 1px #cc99FF;
+}
+
+.btn-make-file:hover {
+  background-color: white;
+  color: #cc99FF;
+}

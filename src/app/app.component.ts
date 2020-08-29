@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {MainService} from './main.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,7 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'ScriptMaker';
+  constructor(private mainService: MainService) {
+    this.mainService.loadSettings();
+  }
 }

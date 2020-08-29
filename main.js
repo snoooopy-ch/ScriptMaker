@@ -159,3 +159,99 @@ app.on('activate', function () {
     createWindow()
   }
 });
+ipcMain.on("loadSettings", (event) => {
+  getSettings();
+});
+
+function getSettings() {
+
+  if(!fs.existsSync(settingPath)) {
+    dialog.showErrorBox('設定', '設定ファイルを読めません。');
+    return;
+  }
+
+  let input = fs.createReadStream(settingPath);
+  let remaining = '';
+  settings = { };
+  input.on('data', function (data) {
+    remaining += data;
+    remaining = remaining.replace(/(\r)/gm, '');
+    var index = remaining.indexOf('\n');
+    var last = 0;
+    while (index > -1) {
+      let line = remaining.substring(last, index);
+
+      last = index + 1;
+      index = remaining.indexOf('\n', last);
+      if (line.startsWith('#')) {
+        // if(stateComments.indexOf(line) !== -1) {
+        curComment = line;
+        // }
+        continue;
+      }
+      if (line.length === 0) {
+        continue;
+      }
+
+      let chunks = line.split(':');
+      let lineArgs = [chunks.shift(), chunks.join(':')];
+
+      if (yesNoKeys.indexOf(lineArgs[0]) !== -1) {
+        settings[lineArgs[0]] = (lineArgs[1] === 'yes' || lineArgs[1] === 'yes;');
+      } else if (selectKeys.indexOf(lineArgs[0]) !== -1) {
+        settings[lineArgs[0]] = lineArgs[1];
+      } else {
+        if (lineArgs.length > 1) {
+          settings[lineArgs[0]] = lineArgs[1].replace(/;/g, '');
+        } else {
+          settings[lineArgs[0]] = '';
+        }
+      }
+    }
+    remaining = remaining.substring(last);
+  });
+
+  input.on('end', function () {
+    win.webContents.send("getSettings", settings);
+  });
+
+}
+
+ipcMain.on("saveSettings", (event, params) => {
+  saveSettings(params);
+});
+
+function saveSettings(params) {
+  let data = fs.readFileSync(settingPath, 'utf8');
+
+  if (data.match(/(part1:)[^\r^\n]+(\r\n)/g) === null) {
+    data = data.replace(/(part1:)+(\r\n)/g, `$1${params.part1}$2`);
+  } else {
+    data = data.replace(/(part1:)[^\r^\n]+(\r\n)/g, `$1${params.part1}$2`);
+  }
+
+  if (data.match(/(part2:)[^\r^\n]+(\r\n)/g) === null) {
+    data = data.replace(/(part2:)+(\r\n)/g, `$1${params.part2}$2`);
+  } else {
+    data = data.replace(/(part2:)[^\r^\n]+(\r\n)/g, `$1${params.part2}$2`);
+  }
+
+  if (data.match(/(part3:)[^\r^\n]+(\r\n)/g) === null) {
+    data = data.replace(/(part3:)+(\r\n)/g, `$1${params.part3}$2`);
+  } else {
+    data = data.replace(/(part3:)[^\r^\n]+(\r\n)/g, `$1${params.part3}$2`);
+  }
+
+  if (data.match(/(part4:)[^\r^\n]+(\r\n)/g) === null) {
+    data = data.replace(/(part4:)+(\r\n)/g, `$1${params.part4}$2`);
+  } else {
+    data = data.replace(/(part4:)[^\r^\n]+(\r\n)/g, `$1${params.part4}$2`);
+  }
+
+  if (data.match(/(select_charset:)[^\r^\n]+(\r\n)/g) === null) {
+    data = data.replace(/(select_charset:)+(\r\n)/g, `$1${params.selectedCharset}$2`);
+  } else {
+    data = data.replace(/(select_charset:)[^\r^\n]+(\r\n)/g, `$1${params.selectedCharset}$2`);
+  }
+  fs.writeFileSync('Setting.ini', data);
+}
