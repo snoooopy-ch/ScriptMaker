@@ -24,4 +24,8 @@ export class MainService {
     electron.ipcRenderer.send('saveSettings', params);
   }
 
+  makeFiles(params): void{
+    electron.ipcRenderer.send('makeFiles', params);
+  }
+
 }

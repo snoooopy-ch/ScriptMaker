@@ -1,5 +1,6 @@
-const {app, BrowserWindow, ipcMain, dialog, Menu, MenuItem} = require('electron');
+const {app, BrowserWindow, ipcMain, dialog, Menu } = require('electron');
 const fs = require('fs');
+const encoding = require('encoding-japanese');
 
 let win;
 let settingPath = 'Setting.ini';
@@ -17,14 +18,14 @@ function createWindow() {
     minWidth: 956,
     title: 'ツイート取得',
     backgroundColor: '#ffffff',
-    icon: `file://${__dirname}/dist/assets/logo.png`,
+    icon: `${__dirname}\\dist\\ScriptMaker\\assets\\logo.png`,
     webPreferences: {
       nodeIntegration: true
     }
   });
 
-
   win.loadURL(`file://${__dirname}/dist/ScriptMaker/index.html`);
+
 
   //// uncomment below to open the DevTools.
   // win.webContents.openDevTools();
@@ -253,5 +254,70 @@ function saveSettings(params) {
   } else {
     data = data.replace(/(select_charset:)[^\r^\n]+(\r\n)/g, `$1${params.selectedCharset}$2`);
   }
+
+  if (data.match(/(file_prefix:)[^\r^\n]+(\r\n)/g) === null) {
+    data = data.replace(/(file_prefix:)+(\r\n)/g, `$1${params.filePrefix}$2`);
+  } else {
+    data = data.replace(/(file_prefix:)[^\r^\n]+(\r\n)/g, `$1${params.filePrefix}$2`);
+  }
+
+  if (data.match(/(start_row:)[^\r^\n]+(\r\n)/g) === null) {
+    data = data.replace(/(start_row:)+(\r\n)/g, `$1${params.startRow}$2`);
+  } else {
+    data = data.replace(/(start_row:)[^\r^\n]+(\r\n)/g, `$1${params.startRow}$2`);
+  }
+
+  if (data.match(/(file_extension:)[^\r^\n]+(\r\n)/g) === null) {
+    data = data.replace(/(file_extension:)+(\r\n)/g, `$1${params.fileExtension}$2`);
+  } else {
+    data = data.replace(/(file_extension:)[^\r^\n]+(\r\n)/g, `$1${params.fileExtension}$2`);
+  }
+
+  if (data.match(/(save_folder:)[^\r^\n]+(\r\n)/g) === null) {
+    data = data.replace(/(save_folder:)+(\r\n)/g, `$1${params.saveFolder}$2`);
+  } else {
+    data = data.replace(/(save_folder:)[^\r^\n]+(\r\n)/g, `$1${params.saveFolder}$2`);
+  }
   fs.writeFileSync('Setting.ini', data);
+}
+
+ipcMain.on("makeFiles", (event, params) => {
+  makeFiles(params);
+});
+
+function makeFiles(params) {
+  let outputList = params.outputScript.split(`\n`);
+  let index = params.startRow;
+  let options=`utf8`;
+  if(params.selectedCharset === 'Shift-JIS'){
+    options=`ascii`;
+  }
+  for (const line of outputList){
+    let data = '';
+    if (line.length > 0) {
+
+      if (params.selectedCharset === 'Shift-JIS') {
+        data = encoding.convert(line, {
+          from: 'UNICODE',
+          to: 'SJIS',
+          type: 'string',
+        });
+      } else {
+        data = line;
+      }
+      data += '\r\n';
+      fs.writeFile(`${params.saveFolder}${params.filePrefix}_${index}${params.fileExtension}`, data, options, (err) => {
+        if (err) throw err;
+        console.log('The file has been saved!');
+      });
+      index++;
+    }
+  }
+  if (index > params.startRow) {
+    dialog.showMessageBoxSync(win, {
+      type: 'info',
+      title: '生成',
+      message: '生成が完了'
+    });
+  }
 }

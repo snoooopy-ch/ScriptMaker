@@ -1,5 +1,6 @@
 import {ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {MainService} from '../main.service';
+import {Hotkey, HotkeysService} from 'angular2-hotkeys';
 
 @Component({
   selector: 'app-content',
@@ -18,8 +19,11 @@ export class ContentComponent implements OnInit, OnDestroy {
   selectedCharset: any;
   subscribers: any = {};
   settings: any;
+  filePrefix: string;
+  startRow: number;
+  fileExtension: string;
 
-  constructor(private mainService: MainService, private cdRef: ChangeDetectorRef) { }
+  constructor(private mainService: MainService, private cdRef: ChangeDetectorRef, private hotkeysService: HotkeysService) { }
 
   ngOnInit(): void {
     this.inputUrls = '';
@@ -29,6 +33,11 @@ export class ContentComponent implements OnInit, OnDestroy {
     this.part4 = '';
     this.rows = 0;
     this.outputScript = '';
+    this.filePrefix = '';
+    this.startRow = 0;
+    this.fileExtension = '';
+    this.saveFolder = '';
+
     this.subscribers.settings = this.mainService.settings.subscribe((value) => {
       this.settings = value;
       if (value.hasOwnProperty('part1')) {
@@ -40,7 +49,26 @@ export class ContentComponent implements OnInit, OnDestroy {
       if (value.hasOwnProperty('select_charset')) {
         this.selectedCharset = this.settings.select_charset;
       }
+
+      if (value.hasOwnProperty('file_prefix')) {
+        this.filePrefix = this.settings.file_prefix;
+      }
+
+      if (value.hasOwnProperty('start_row')) {
+        this.startRow = this.settings.start_row;
+      }
+
+      if (value.hasOwnProperty('file_extension')) {
+        this.fileExtension = this.settings.file_extension;
+      }
+
+      if (value.hasOwnProperty('save_folder')) {
+        this.saveFolder = this.settings.save_folder;
+      }
       this.cdRef.detectChanges();
+      if (value.hasOwnProperty('output_key')) {
+        this.setHotKeys();
+      }
     });
   }
 
@@ -55,8 +83,30 @@ export class ContentComponent implements OnInit, OnDestroy {
       part2: this.part2,
       part3: this.part3,
       part4: this.part4,
-      selectedCharset: this.selectedCharset
+      selectedCharset: this.selectedCharset,
+      filePrefix: this.filePrefix,
+      startRow: this.startRow,
+      fileExtension: this.fileExtension,
+      saveFolder: this.saveFolder
     });
+  }
+
+  /**
+   * ショートカットキー値を設定します。
+   */
+  setHotKeys(): void{
+    // レス描写エリアの一番上に移動
+    this.hotkeysService.add(new Hotkey(this.settings.output_key.toLowerCase(),
+      (event: KeyboardEvent): boolean => {
+        this.btnOutputClickHandler();
+        return false; // Prevent bubbling
+      }));
+
+    // レス描写エリアの一番下に移動
+    this.hotkeysService.add(new Hotkey(this.settings.make_key.toLowerCase(), (event: KeyboardEvent): boolean => {
+      this.btnMakeFileClickHandler();
+      return false; // Prevent bubbling
+    }));
   }
 
   btnOutputClickHandler(): void {
@@ -65,8 +115,20 @@ export class ContentComponent implements OnInit, OnDestroy {
       const items = line.split('\t');
       if (items.length > 6) {
         this.outputScript += `${this.part1}${items[6]}${this.part1}${this.part2}${items[2]}${this.part3}${items[3]}${this.part4}\n`;
+        this.rows++;
       }
     }
     this.cdRef.detectChanges();
+  }
+
+  btnMakeFileClickHandler(): void {
+    this.mainService.makeFiles({
+      outputScript: this.outputScript,
+      filePrefix: this.filePrefix,
+      startRow: this.startRow,
+      fileExtension: this.fileExtension,
+      saveFolder: this.saveFolder,
+      selectedCharset: this.selectedCharset
+    });
   }
 }

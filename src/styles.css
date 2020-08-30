@@ -22,7 +22,7 @@ a {
 }
 
 .txt-output{
-  height: 165px;
+  height: calc(100vh - 720px);
 }
 
 .txt-part{
