@@ -17,12 +17,9 @@ a {
   color: unset;
 }
 
-.txt-input{
-  height: 165px;
-}
-
-.txt-output{
-  height: calc(100vh - 720px);
+.txt-input, .txt-output{
+  min-height: 105px;
+  height: calc((100vh - 555px) * 0.5);
 }
 
 .txt-part{

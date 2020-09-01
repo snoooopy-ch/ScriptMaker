@@ -18,7 +18,7 @@ function createWindow() {
     minWidth: 956,
     title: 'ツイート取得',
     backgroundColor: '#ffffff',
-    icon: `${__dirname}\\dist\\ScriptMaker\\assets\\logo.png`,
+    icon: `file://${__dirname}/dist/assets/logo.png`,
     webPreferences: {
       nodeIntegration: true
     }
