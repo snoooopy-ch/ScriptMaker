@@ -111,10 +111,12 @@ export class ContentComponent implements OnInit, OnDestroy {
 
   btnOutputClickHandler(): void {
     const inputList = this.inputUrls.split('\n');
+    this.outputScript = '';
+    this.rows = 0;
     for (const line of inputList){
       const items = line.split('\t');
       if (items.length > 6) {
-        this.outputScript += `${this.part1}${items[6]}${this.part1}${this.part2}${items[2]}${this.part3}${items[3]}${this.part4}\n`;
+        this.outputScript += `${this.part1}${items[6]}${this.part2}${items[2]}${this.part3}${items[3]}${this.part4}\n`;
         this.rows++;
       }
     }
