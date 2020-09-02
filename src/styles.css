@@ -90,5 +90,9 @@ a {
 }
 
 .custom-overlay h3{
-  color: #fff;
+  color: #ff0019;
+}
+
+.spinner-circle-swish {
+  color: #ff0019 !important;
 }
