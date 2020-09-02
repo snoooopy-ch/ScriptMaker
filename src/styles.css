@@ -18,11 +18,16 @@ a {
 }
 
 .txt-input{
-  height: 165px;
+  /*height: 165px;*/
+  height: calc(100vh - 440px);
 }
 
 .txt-output{
   height: calc(100vh - 720px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: 1px solid gray;
+  padding: 1px;
 }
 
 .txt-part{
