@@ -167,7 +167,7 @@ export class ContentComponent implements OnInit, OnDestroy {
       filePrefix: this.filePrefix,
       startRow: this.startRow,
       fileExtension: this.fileExtension,
-      saveFolder: this.saveFolder,
+      saveFolder: (this.saveFolder.endsWith('\\') || this.saveFolder.endsWith('/')) ? this.saveFolder : `${this.saveFolder}\\`,
       selectedCharset: this.selectedCharset
     });
   }
