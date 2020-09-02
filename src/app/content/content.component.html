@@ -14,16 +14,20 @@
 <div class="mx-2 mt-1">
   パーツ4<input type="text" class="ml-1 txt-part" [(ngModel)]="part4">
 </div>
+<!--<div class="m-2">-->
+<!--  <button class="w-100 btn-output" (click)="btnOutputClickHandler()">出力</button>-->
+<!--</div>-->
 <div class="m-2">
-  <button class="w-100 btn-output" (click)="btnOutputClickHandler()">出力</button>
+  <button class="w-100 btn-output" (click)="btnMakeFileClickHandler()">生成</button>
 </div>
 <div class="m-2 w-100">
   行数<input type="number" class="ml-1 w-25" [(ngModel)]="rows">
 </div>
-<div class="m-2">
-  <div>出力欄</div>
-  <textarea class="w-100 txt-output" [(ngModel)]="outputScript"></textarea>
-</div>
+<!--<div class="m-2">-->
+<!--  <div>出力欄</div>-->
+<!--&lt;!&ndash;  <textarea class="w-100 txt-output" [(ngModel)]="outputScript"></textarea>&ndash;&gt;-->
+<!--  <div class="w-100 txt-output" [innerText]="outputScript" ></div>-->
+<!--</div>-->
 <div class="m-2 border p-1">
   <div class="d-inline-flex w-100 justify-content-between">
     <div class="output-group">ファイル名前半<input class="txt-file-name" type="text" [(ngModel)]="filePrefix"></div>
@@ -39,7 +43,8 @@
   <label class="mx-5 mb-0"><input class="mr-1" type="radio" name="opt-charset" [(ngModel)]="selectedCharset" value="Shift-JIS">Shift-JIS</label>
   <label class="mb-0"><input class="mr-1" type="radio" name="opt-charset" [(ngModel)]="selectedCharset" value="UTF-8">UTF-8(BOMなし)</label>
 </div>
-<div class="m-2">
-  <button class="w-100 btn-make-file" (click)="btnMakeFileClickHandler()">生成</button>
-</div>
+<!--<div class="m-2">-->
+<!--  <button class="w-100 btn-make-file" (click)="btnMakeFileClickHandler()">生成</button>-->
+<!--</div>-->
+<ngx-loading [show]="isLoading" [config]="{ backdropBorderRadius: '3px', animationType: ngxLoadingAnimationTypes.circleSwish, primaryColour: '#FF9800' }"></ngx-loading>
 

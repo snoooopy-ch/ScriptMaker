@@ -1,6 +1,7 @@
-import {ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {MainService} from '../main.service';
 import {Hotkey, HotkeysService} from 'angular2-hotkeys';
+import { ngxLoadingAnimationTypes } from 'ngx-loading';
 
 @Component({
   selector: 'app-content',
@@ -22,6 +23,9 @@ export class ContentComponent implements OnInit, OnDestroy {
   filePrefix: string;
   startRow: number;
   fileExtension: string;
+  isLoading: boolean;
+  outputList: string[];
+  public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
 
   constructor(private mainService: MainService, private cdRef: ChangeDetectorRef, private hotkeysService: HotkeysService) { }
 
@@ -37,6 +41,8 @@ export class ContentComponent implements OnInit, OnDestroy {
     this.startRow = 0;
     this.fileExtension = '';
     this.saveFolder = '';
+    this.isLoading = false;
+    this.outputList = [];
 
     this.subscribers.settings = this.mainService.settings.subscribe((value) => {
       this.settings = value;
@@ -70,10 +76,16 @@ export class ContentComponent implements OnInit, OnDestroy {
         this.setHotKeys();
       }
     });
+    this.subscribers.notify = this.mainService.notify.subscribe(() => {
+      console.log('hide');
+      this.isLoading = false;
+      this.cdRef.detectChanges();
+    });
   }
 
   ngOnDestroy(): void{
     this.subscribers.settings.unsubscribe();
+    this.subscribers.notify.unsubscribe();
   }
 
   @HostListener('window:beforeunload', [ '$event' ])
@@ -110,13 +122,22 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   btnOutputClickHandler(): void {
+    // this.isLoading = true;
+    // this.output().then(() => {
+    //   this.isLoading = false;
+    //   this.cdRef.detectChanges();
+    // });
+  }
+
+  output(): void{
     const inputList = this.inputUrls.split('\n');
     this.outputScript = '';
+    this.outputList.length = 0;
     this.rows = 0;
     for (const line of inputList){
       const items = line.split('\t');
       if (items.length > 6) {
-        this.outputScript += `${this.part1}${items[6]}${this.part2}${items[2]}${this.part3}${items[3]}${this.part4}\n`;
+        this.outputList.push(`${this.part1}${items[6]}${this.part2}${items[2]}${this.part3}${items[3]}${this.part4}`);
         this.rows++;
       }
     }
@@ -124,8 +145,11 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   btnMakeFileClickHandler(): void {
+    this.isLoading = true;
+    this.cdRef.detectChanges();
+    this.output();
     this.mainService.makeFiles({
-      outputScript: this.outputScript,
+      outputList: this.outputList,
       filePrefix: this.filePrefix,
       startRow: this.startRow,
       fileExtension: this.fileExtension,

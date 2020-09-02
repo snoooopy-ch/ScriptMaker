@@ -282,42 +282,88 @@ function saveSettings(params) {
 }
 
 ipcMain.on("makeFiles", (event, params) => {
-  makeFiles(params);
+  makeFiles(params).then(value => {
+
+    if (value.index > value.startRow) {
+      dialog.showMessageBoxSync(win, {
+        type: 'info',
+        title: '生成',
+        message: '生成が完了'
+      });
+    }
+  });
 });
 
-function makeFiles(params) {
-  let outputList = params.outputScript.split(`\n`);
+async function makeFiles(params) {
+  // let outputList = params.outputScript.split(`\n`);
+  let outputList = params.outputList;
   let index = params.startRow;
   let options=`utf8`;
   if(params.selectedCharset === 'Shift-JIS'){
     options=`ascii`;
   }
-  for (const line of outputList){
+  const size = 100;
+  for (let index = 0; index < outputList.length; index += size)
+  // for (const line of outputList){
+    setTimeout(function() {
+      writeFiles(outputList,index,params, size, options).then((value) =>{
+        console.log(value);
+        if(value === outputList.length){
+          setTimeout(function() {
+            win.webContents.send("notifyComplete");
+          }, 15000);
+        }
+      });
+    }, index * 6);
+
+    // let data = '';
+    // if (line.length > 0) {
+    //
+    //   // if (params.selectedCharset === 'Shift-JIS') {
+    //   //   data = encoding.convert(line, {
+    //   //     from: 'UNICODE',
+    //   //     to: 'SJIS',
+    //   //     type: 'string',
+    //   //   });
+    //   // } else {
+    //   //   data = line;
+    //   // }
+    //   // data += '\r\n';
+    //   // fs.writeFile(`${params.saveFolder}${params.filePrefix}_${index}${params.fileExtension}`, data, options, (err) => {
+    //   //   if (err) throw err;
+    //   //   console.log('The file has been saved!');
+    //   // });
+    //   // fs.writeFileSync(`${params.saveFolder}${params.filePrefix}${index}${params.fileExtension}`, data, options);
+    //   // setTimeout((index) => {
+    //   //   fs.writeFile(`${params.saveFolder}${params.filePrefix}${index}${params.fileExtension}`, data, options, (err)=>{});
+    //   // }, Math.floor(index / 400) * 100);
+    //
+    //   index++;
+    // }
+  // }
+  return {index: index, startRow: params.startRow};
+}
+
+async function writeFiles(outputList, startIndex, params, size, options){
+  let i = startIndex;
+  while (i < outputList.length && i < startIndex + size ){
     let data = '';
-    if (line.length > 0) {
+    if (outputList[i].length > 0) {
 
       if (params.selectedCharset === 'Shift-JIS') {
-        data = encoding.convert(line, {
+        data = encoding.convert(outputList[i], {
           from: 'UNICODE',
           to: 'SJIS',
           type: 'string',
         });
       } else {
-        data = line;
+        data = outputList[i];
       }
       data += '\r\n';
-      fs.writeFile(`${params.saveFolder}${params.filePrefix}_${index}${params.fileExtension}`, data, options, (err) => {
-        if (err) throw err;
-        console.log('The file has been saved!');
-      });
-      index++;
+      // fs.writeFileSync(`${params.saveFolder}${params.filePrefix}${Number(params.startRow) + Number(i)}${params.fileExtension}`, data, options);
+      await fs.writeFile(`${params.saveFolder}${params.filePrefix}${Number(params.startRow) + Number(i)}${params.fileExtension}`, data, options,(err)=>{});
     }
+    i++;
   }
-  if (index > params.startRow) {
-    dialog.showMessageBoxSync(win, {
-      type: 'info',
-      title: '生成',
-      message: '生成が完了'
-    });
-  }
+  return i;
 }
