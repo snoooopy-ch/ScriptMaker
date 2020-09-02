@@ -9,15 +9,15 @@ const electron = (window as any).require('electron');
 export class MainService {
 
   settings = new BehaviorSubject<any>({});
-  notify = new BehaviorSubject<any>({});
+  makeStatus = new BehaviorSubject<any>({});
 
   constructor() {
     electron.ipcRenderer.on('getSettings', (event, value) => {
       this.settings.next(value);
     });
 
-    electron.ipcRenderer.on('notifyComplete', (event) => {
-      this.notify.next({});
+    electron.ipcRenderer.on('notifyComplete', (event, value) => {
+      this.makeStatus.next(value);
     });
   }
 

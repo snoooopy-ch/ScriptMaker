@@ -46,5 +46,12 @@
 <!--<div class="m-2">-->
 <!--  <button class="w-100 btn-make-file" (click)="btnMakeFileClickHandler()">生成</button>-->
 <!--</div>-->
-<ngx-loading [show]="isLoading" [config]="{ backdropBorderRadius: '3px', animationType: ngxLoadingAnimationTypes.circleSwish, primaryColour: '#FF9800' }"></ngx-loading>
+<ng-template #customLoadingTemplate>
+  <div class="custom-overlay">
+    <h3>
+      {{completedRows}}/{{outputList.length}}
+    </h3>
+  </div>
+</ng-template>
+<ngx-loading [show]="isLoading" [config]="{ backdropBorderRadius: '3px', animationType: ngxLoadingAnimationTypes.circleSwish, primaryColour: '#FF9800' }" [template]="customLoadingTemplate"></ngx-loading>
 
