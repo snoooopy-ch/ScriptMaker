@@ -80,6 +80,7 @@ export class ContentComponent implements OnInit, OnDestroy {
         this.setHotKeys();
       }
     });
+
     this.subscribers.makeStatus = this.mainService.makeStatus.subscribe((value) => {
       if (value.status === 'failure'){
         this.isLoading = false;
@@ -95,11 +96,7 @@ export class ContentComponent implements OnInit, OnDestroy {
           setTimeout(() => {
             this.isLoading = false;
             this.cdRef.detectChanges();
-            electron.remote.dialog.showMessageBoxSync(null, {
-              type: 'info',
-              title: '生成',
-              message: '生成が完了'
-            });
+            electron.ipcRenderer.send('showMessage');
           }, finishTime);
         }
       }
