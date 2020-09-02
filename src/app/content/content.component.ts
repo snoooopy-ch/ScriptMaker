@@ -3,6 +3,8 @@ import {MainService} from '../main.service';
 import {Hotkey, HotkeysService} from 'angular2-hotkeys';
 import { ngxLoadingAnimationTypes } from 'ngx-loading';
 
+const electron = (window as any).require('electron');
+
 @Component({
   selector: 'app-content',
   templateUrl: './content.component.html',
@@ -26,6 +28,8 @@ export class ContentComponent implements OnInit, OnDestroy {
   isLoading: boolean;
   outputList: string[];
   public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
+  completedRows: number;
+
 
   constructor(private mainService: MainService, private cdRef: ChangeDetectorRef, private hotkeysService: HotkeysService) { }
 
@@ -72,20 +76,39 @@ export class ContentComponent implements OnInit, OnDestroy {
         this.saveFolder = this.settings.save_folder;
       }
       this.cdRef.detectChanges();
-      if (value.hasOwnProperty('output_key')) {
+      if (value.hasOwnProperty('make_key')) {
         this.setHotKeys();
       }
     });
-    this.subscribers.notify = this.mainService.notify.subscribe(() => {
-      console.log('hide');
-      this.isLoading = false;
-      this.cdRef.detectChanges();
+    this.subscribers.makeStatus = this.mainService.makeStatus.subscribe((value) => {
+      if (value.status === 'failure'){
+        this.isLoading = false;
+        this.cdRef.detectChanges();
+      } else if (value.status === 'process'){
+        this.completedRows = value.completedRows;
+        this.cdRef.detectChanges();
+        if (value.completedRows === this.outputList.length){
+          let finishTime = 0;
+          if (this.outputList.length > 8000){
+            finishTime = this.outputList.length * 1.6;
+          }
+          setTimeout(() => {
+            this.isLoading = false;
+            this.cdRef.detectChanges();
+            electron.remote.dialog.showMessageBoxSync(null, {
+              type: 'info',
+              title: '生成',
+              message: '生成が完了'
+            });
+          }, finishTime);
+        }
+      }
     });
   }
 
   ngOnDestroy(): void{
     this.subscribers.settings.unsubscribe();
-    this.subscribers.notify.unsubscribe();
+    this.subscribers.makeStatus.unsubscribe();
   }
 
   @HostListener('window:beforeunload', [ '$event' ])
@@ -107,14 +130,7 @@ export class ContentComponent implements OnInit, OnDestroy {
    * ショートカットキー値を設定します。
    */
   setHotKeys(): void{
-    // レス描写エリアの一番上に移動
-    this.hotkeysService.add(new Hotkey(this.settings.output_key.toLowerCase(),
-      (event: KeyboardEvent): boolean => {
-        this.btnOutputClickHandler();
-        return false; // Prevent bubbling
-      }));
 
-    // レス描写エリアの一番下に移動
     this.hotkeysService.add(new Hotkey(this.settings.make_key.toLowerCase(), (event: KeyboardEvent): boolean => {
       this.btnMakeFileClickHandler();
       return false; // Prevent bubbling
@@ -146,6 +162,7 @@ export class ContentComponent implements OnInit, OnDestroy {
 
   btnMakeFileClickHandler(): void {
     this.isLoading = true;
+    this.completedRows = 0;
     this.cdRef.detectChanges();
     this.output();
     this.mainService.makeFiles({

@@ -282,66 +282,29 @@ function saveSettings(params) {
 }
 
 ipcMain.on("makeFiles", (event, params) => {
-  makeFiles(params).then(value => {
-
-    if (value.index > value.startRow) {
-      dialog.showMessageBoxSync(win, {
-        type: 'info',
-        title: '生成',
-        message: '生成が完了'
-      });
-    }
-  });
+  makeFiles(params);
 });
 
 async function makeFiles(params) {
-  // let outputList = params.outputScript.split(`\n`);
+
+  if (!fs.existsSync(params.saveFolder)) {
+    dialog.showErrorBox('生成', 'ディレクトリが存在しません。');
+    win.webContents.send("notifyComplete",{status: 'failure', completedRows: 0});
+    return;
+  }
   let outputList = params.outputList;
-  let index = params.startRow;
   let options=`utf8`;
   if(params.selectedCharset === 'Shift-JIS'){
     options=`ascii`;
   }
   const size = 100;
-  for (let index = 0; index < outputList.length; index += size)
-  // for (const line of outputList){
-    setTimeout(function() {
-      writeFiles(outputList,index,params, size, options).then((value) =>{
-        console.log(value);
-        if(value === outputList.length){
-          setTimeout(function() {
-            win.webContents.send("notifyComplete");
-          }, 15000);
-        }
+  for (let index = 0; index < outputList.length; index += size) {
+    setTimeout(() => {
+      writeFiles(outputList, index, params, size, options).then((value) => {
+        win.webContents.send("notifyComplete", {status: 'process', completedRows: value});
       });
-    }, index * 6);
-
-    // let data = '';
-    // if (line.length > 0) {
-    //
-    //   // if (params.selectedCharset === 'Shift-JIS') {
-    //   //   data = encoding.convert(line, {
-    //   //     from: 'UNICODE',
-    //   //     to: 'SJIS',
-    //   //     type: 'string',
-    //   //   });
-    //   // } else {
-    //   //   data = line;
-    //   // }
-    //   // data += '\r\n';
-    //   // fs.writeFile(`${params.saveFolder}${params.filePrefix}_${index}${params.fileExtension}`, data, options, (err) => {
-    //   //   if (err) throw err;
-    //   //   console.log('The file has been saved!');
-    //   // });
-    //   // fs.writeFileSync(`${params.saveFolder}${params.filePrefix}${index}${params.fileExtension}`, data, options);
-    //   // setTimeout((index) => {
-    //   //   fs.writeFile(`${params.saveFolder}${params.filePrefix}${index}${params.fileExtension}`, data, options, (err)=>{});
-    //   // }, Math.floor(index / 400) * 100);
-    //
-    //   index++;
-    // }
-  // }
-  return {index: index, startRow: params.startRow};
+    }, index * 8);
+  }
 }
 
 async function writeFiles(outputList, startIndex, params, size, options){
@@ -360,7 +323,6 @@ async function writeFiles(outputList, startIndex, params, size, options){
         data = outputList[i];
       }
       data += '\r\n';
-      // fs.writeFileSync(`${params.saveFolder}${params.filePrefix}${Number(params.startRow) + Number(i)}${params.fileExtension}`, data, options);
       await fs.writeFile(`${params.saveFolder}${params.filePrefix}${Number(params.startRow) + Number(i)}${params.fileExtension}`, data, options,(err)=>{});
     }
     i++;

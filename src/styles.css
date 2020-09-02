@@ -73,3 +73,22 @@ a {
   background-color: white;
   color: #cc99FF;
 }
+
+.custom-overlay {
+  top: 180px;
+  z-index: 2002;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+  color: white;
+}
+
+.custom-overlay h3{
+  color: #fff;
+}
