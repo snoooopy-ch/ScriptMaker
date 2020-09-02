@@ -329,3 +329,10 @@ async function writeFiles(outputList, startIndex, params, size, options){
   }
   return i;
 }
+ipcMain.on("showMessage", (event) => {
+  dialog.showMessageBoxSync(null, {
+    type: 'info',
+    title: '生成',
+    message: '生成が完了'
+  });
+});
