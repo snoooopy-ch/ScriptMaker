@@ -150,7 +150,11 @@ export class ContentComponent implements OnInit, OnDestroy {
     for (const line of inputList){
       const items = line.split('\t');
       if (items.length > 6) {
-        this.outputList.push(`${this.part1}${items[6]}${this.part2}${items[2]}${this.part3}${items[3]}${this.part4}`);
+        let seg1 = items[6];
+        let seg2 = items[2];
+        let seg3 = items[3].replace(`'`, `\\'`);
+
+        this.outputList.push(`${this.part1}${seg1}${this.part2}${seg2}${this.part3}${seg3}${this.part4}`);
         this.rows++;
       }
     }
