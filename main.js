@@ -273,10 +273,22 @@ function saveSettings(params) {
     data = data.replace(/(file_extension:)[^\r^\n]+(\r\n)/g, `$1${params.fileExtension}$2`);
   }
 
-  if (data.match(/(save_folder:)[^\r^\n]+(\r\n)/g) === null) {
-    data = data.replace(/(save_folder:)+(\r\n)/g, `$1${params.saveFolder}$2`);
+  if (data.match(/(save_folder1:)[^\r^\n]+(\r\n)/g) === null) {
+    data = data.replace(/(save_folder1:)+(\r\n)/g, `$1${params.saveFolder1}$2`);
   } else {
-    data = data.replace(/(save_folder:)[^\r^\n]+(\r\n)/g, `$1${params.saveFolder}$2`);
+    data = data.replace(/(save_folder1:)[^\r^\n]+(\r\n)/g, `$1${params.saveFolder1}$2`);
+  }
+
+  if (data.match(/(save_folder2:)[^\r^\n]+(\r\n)/g) === null) {
+    data = data.replace(/(save_folder2:)+(\r\n)/g, `$1${params.saveFolder2}$2`);
+  } else {
+    data = data.replace(/(save_folder2:)[^\r^\n]+(\r\n)/g, `$1${params.saveFolder2}$2`);
+  }
+
+  if (data.match(/(save_folder3:)[^\r^\n]+(\r\n)/g) === null) {
+    data = data.replace(/(save_folder3:)+(\r\n)/g, `$1${params.saveFolder3}$2`);
+  } else {
+    data = data.replace(/(save_folder3:)[^\r^\n]+(\r\n)/g, `$1${params.saveFolder3}$2`);
   }
   fs.writeFileSync('Setting.ini', data);
 }
