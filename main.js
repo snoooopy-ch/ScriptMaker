@@ -16,7 +16,7 @@ function createWindow() {
     width: 956,
     height: 948,
     minWidth: 956,
-    title: 'ツイート取得',
+    title: 'ScriptMaker',
     backgroundColor: '#ffffff',
     icon: `file://${__dirname}/dist/assets/logo.png`,
     webPreferences: {
