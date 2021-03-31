@@ -29,7 +29,10 @@ export class ContentComponent implements OnInit, OnDestroy {
   outputList: string[];
   public ngxLoadingAnimationTypes = ngxLoadingAnimationTypes;
   completedRows: number;
-
+  public selectedSaveFolder: string;
+  saveFolder1: any;
+  saveFolder2: any;
+  saveFolder3: any;
 
   constructor(private mainService: MainService, private cdRef: ChangeDetectorRef, private hotkeysService: HotkeysService) { }
 
@@ -47,6 +50,7 @@ export class ContentComponent implements OnInit, OnDestroy {
     this.saveFolder = '';
     this.isLoading = false;
     this.outputList = [];
+    this.selectedSaveFolder = '1';
 
     this.subscribers.settings = this.mainService.settings.subscribe((value) => {
       this.settings = value;
@@ -72,9 +76,13 @@ export class ContentComponent implements OnInit, OnDestroy {
         this.fileExtension = this.settings.file_extension;
       }
 
-      if (value.hasOwnProperty('save_folder')) {
-        this.saveFolder = this.settings.save_folder;
+      if (value.hasOwnProperty('save_folder1')) {
+        this.saveFolder = this.settings.save_folder1;
+        this.saveFolder1 = this.settings.save_folder1;
+        this.saveFolder2 = this.settings.save_folder2;
+        this.saveFolder3 = this.settings.save_folder3;
       }
+
       this.cdRef.detectChanges();
       if (value.hasOwnProperty('make_key')) {
         this.setHotKeys();
@@ -119,7 +127,9 @@ export class ContentComponent implements OnInit, OnDestroy {
       filePrefix: this.filePrefix,
       startRow: this.startRow,
       fileExtension: this.fileExtension,
-      saveFolder: this.saveFolder
+      saveFolder1: this.saveFolder1,
+      saveFolder2: this.saveFolder2,
+      saveFolder3: this.saveFolder3,
     });
   }
 
@@ -149,12 +159,11 @@ export class ContentComponent implements OnInit, OnDestroy {
     this.rows = 0;
     for (const line of inputList){
       const items = line.split('\t');
-      if (items.length > 6) {
-        let seg1 = items[6];
-        let seg2 = items[2];
-        let seg3 = items[3].replace(`'`, `\\'`);
+	if (items.length > 9) {
+        this.outputList.push(`${this.part1}${items[9]}${this.part2}${items[5]}${this.part3}${items[6]}${this.part4}`);
 
-        this.outputList.push(`${this.part1}${seg1}${this.part2}${seg2}${this.part3}${seg3}${this.part4}`);
+
+
         this.rows++;
       }
     }
@@ -162,17 +171,31 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   btnMakeFileClickHandler(): void {
-    this.isLoading = true;
-    this.completedRows = 0;
-    this.cdRef.detectChanges();
-    this.output();
-    this.mainService.makeFiles({
-      outputList: this.outputList,
-      filePrefix: this.filePrefix,
-      startRow: this.startRow,
-      fileExtension: this.fileExtension,
-      saveFolder: (this.saveFolder.endsWith('\\') || this.saveFolder.endsWith('/')) ? this.saveFolder : `${this.saveFolder}\\`,
-      selectedCharset: this.selectedCharset
-    });
+    if (this.inputUrls.length > 0) {
+      this.isLoading = true;
+      this.completedRows = 0;
+      this.cdRef.detectChanges();
+      this.output();
+      if (this.outputList.length > 0) {
+        if (this.selectedSaveFolder === '1') {
+          this.saveFolder = this.saveFolder1;
+        } else if (this.selectedSaveFolder === '2') {
+          this.saveFolder = this.saveFolder2;
+        } else if (this.selectedSaveFolder === '3') {
+          this.saveFolder = this.saveFolder3;
+        }
+        this.mainService.makeFiles({
+          outputList: this.outputList,
+          filePrefix: this.filePrefix,
+          startRow: this.startRow,
+          fileExtension: this.fileExtension,
+          saveFolder: (this.saveFolder.endsWith('\\') || this.saveFolder.endsWith('/')) ? this.saveFolder : `${this.saveFolder}\\`,
+          selectedCharset: this.selectedCharset
+        });
+      } else {
+        this.isLoading = false;
+      }
+    }
   }
+
 }

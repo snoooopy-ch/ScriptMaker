@@ -19,7 +19,7 @@ a {
 
 .txt-input{
   /*height: 165px;*/
-  height: calc(100vh - 440px);
+  height: calc(100vh - 510px);
 }
 
 .txt-output{
@@ -47,7 +47,7 @@ a {
 }
 
 .txt-save-folder{
-  width: calc(100% - 107px);
+  width: calc(100% - 175px);
 }
 
 .btn-output{
@@ -88,11 +88,6 @@ a {
   border-radius: 3px;
   color: white;
 }
-
 .custom-overlay h3{
-  color: #ff0019;
-}
-
-.spinner-circle-swish {
-  color: #ff0019 !important;
+  color: #fff;
 }

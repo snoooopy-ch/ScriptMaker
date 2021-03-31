@@ -1,5 +1,5 @@
 <div class="m-2">
-  <div>入力欄（最大２万行まで）</div>
+  <div>入力欄(最大2万行まで)</div>
   <textarea class="w-100 txt-input" [(ngModel)]="inputUrls"></textarea>
 </div>
 <div class="mx-2">
@@ -35,7 +35,13 @@
     <div class="pr-1">拡張子<input class="ml-1" type="text" [(ngModel)]="fileExtension"></div>
   </div>
   <div class="mt-1">
-    保存ディレクトリ<input class="ml-1 txt-save-folder" type="text" [(ngModel)]="saveFolder">
+    <label>保存ディレクトリ 1<input type="radio" name="opt-save-folder" value="1" [(ngModel)]="selectedSaveFolder"></label><input class="ml-1 txt-save-folder" type="text" [(ngModel)]="saveFolder1">
+  </div>
+  <div class="mt-1">
+    <label>保存ディレクトリ 2<input type="radio" name="opt-save-folder" value="2" [(ngModel)]="selectedSaveFolder"></label><input class="ml-1 txt-save-folder" type="text" [(ngModel)]="saveFolder2">
+  </div>
+  <div class="mt-1">
+    <label>保存ディレクトリ 3<input type="radio" name="opt-save-folder" value="3" [(ngModel)]="selectedSaveFolder"></label><input class="ml-1 txt-save-folder" type="text" [(ngModel)]="saveFolder3">
   </div>
 </div>
 <div class="m-2">
