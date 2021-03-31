@@ -194,10 +194,11 @@ export class ContentComponent implements OnInit, OnDestroy {
         electron.remote.dialog.showMessageBoxSync(null, {
           type: 'info',
           title: '生成',
-          message: '入力内容がありません'
+          message: '正確な入力内容がありません'
         });
       }
     } else{
+
       electron.remote.dialog.showMessageBoxSync(null, {
         type: 'info',
         title: '生成',
