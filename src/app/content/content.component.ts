@@ -191,7 +191,18 @@ export class ContentComponent implements OnInit, OnDestroy {
         });
       } else {
         this.isLoading = false;
+        electron.remote.dialog.showMessageBoxSync(null, {
+          type: 'info',
+          title: '生成',
+          message: '入力内容がありません'
+        });
       }
+    } else{
+      electron.remote.dialog.showMessageBoxSync(null, {
+        type: 'info',
+        title: '生成',
+        message: '入力内容がありません'
+      });
     }
   }
 
